@@ -1,0 +1,91 @@
+﻿Addressable Assets System trong Unity là một hệ thống quản lý tài nguyên mạnh mẽ giúp tải, unload và quản lý nội dung một cách linh hoạt, đặc biệt hữu ích khi làm việc với nội dung lớn hoặc cập nhật từ xa
+
+Tính năng: 
+- Tải tài nguyên theo yêu cầu: Chỉ tải những asset cần thiết thay vì giữ tất cả trong bộ nhớ
+- Hỗ trợ Remote Assets: Có thể tải nội dung từ server/CDN thay vì lưu trữ tất cả trong bản build
+- Tối ưu bộ nhớ: Hệ thống tự động quản lý bộ nhớ và dọn dẹp những asset không còn sử dụng
+- Hỗ trợ Asset Bundles: Addressables tự động đóng gói tài nguyên thành các Asset Bundles mà không cần cấu hình thủ công
+- Dễ dàng cập nhật: Có thể cập nhật tài nguyên mà không cần build lại toàn bộ game
+
+Cơ bản:
+1. Bật Addressables trong Unity
+Trước tiên, bạn cần thêm Addressables vào dự án:
+* Vào Window → Package Manager → Search "Addressables"
+* Chọn Install để thêm vào dự án.
+* Sau khi cài đặt, vào Window → Asset Management → Addressables → Groups để mở Addressable Groups.
+* Nếu chưa có, nhấn Create Addressables Settings để tạo cấu hình mặc định.
+
+2. Đánh dấu một Asset là Addressable
+* Chọn một Prefab, Texture, Audio, hay bất kỳ asset nào.
+* Trong Inspector, tích vào ô Addressable.
+* Unity sẽ tự động thêm asset đó vào Addressable Groups.
+* Bạn có thể chỉnh sửa tên của nó trong cột Address (mặc định là đường dẫn asset).
+
+3. Load Asset bằng Code
+- Có 4 cách để load aset bằng code:
+
+* Load một Asset cụ thể (load một prefab, texture, audioclip cụ thể)
+-- Chỉ load vào bộ nhớ, không tạo GameObject.
+-- Độ phức tạp: Dễ
+-- Hiệu năng: Tốt
+    void Start()
+    {
+        Addressables.LoadAssetAsync<GameObject>(assetAddress).Completed += OnAssetLoaded;
+    }
+
+    void OnAssetLoaded(AsyncOperationHandle<GameObject> obj)
+    {
+        if (obj.Status == AsyncOperationStatus.Succeeded)
+        {
+            Instantiate(obj.Result); // Tạo GameObject nếu load thành công
+        }
+    }
+
+* Load và Instantiate trực tiếp (khi muốn vừa load vừa tạo Prefab trong scene ngay lập tức)
+-- Load + Instantiate cùng lúc, nhưng không lưu lại reference.
+-- Độ phức tạp: TB
+-- Hiệu năng: Chậm hơn
+    void Start()
+    {
+        Addressables.InstantiateAsync(prefabAddress);
+    }
+
+* Load một danh sách Asset 
+-- Tốt khi load theo Label nhưng có thể tốn RAM nếu load quá nhiều.
+-- Độ phức tạp: Khá phức tạp
+-- Hiệu năng: Tốt (nếu quản lý tốt bộ nhớ)
+
+public string label; // Label để load nhiều asset
+
+    void Start()
+    {
+        Addressables.LoadAssetsAsync<GameObject>(label, OnAssetLoaded);
+    }
+
+    void OnAssetLoaded(GameObject obj)
+    {
+        Instantiate(obj); // Tạo tất cả Prefab được load
+    }
+* Load Scene bằng Addressables (Dùng khi muốn chuyển scene bằng Addressables thay vì SceneManager)
+-- Dùng khi cần quản lý Scene theo Bundle.
+-- Độ phức tạp: TB
+-- Hiệu năng: Chậm (vì phải load cả Scene)
+
+public string sceneAddress; // Địa chỉ Scene (phải là Addressable)
+
+    public void LoadScene()
+    {
+        Addressables.LoadSceneAsync(sceneAddress);
+    }
+
+====>>>> Cách tối ưu nhất thường là LoadAssetAsync() rồi Instantiate thủ công, vì:
+-- Chỉ load khi cần
+-- Cho phép quản lý object đã load
+-- Giảm bộ nhớ tiêu tốn do Instantiate không cần thiết
+
+4. Build và kiểm tra Addressables
+Sau khi thiết lập xong, cần build dữ liệu Addressables để game có thể tải asset đúng cách:
+* Open Window → Asset Management → Addressables → Groups
+* Nhấn Build → New Build → Default Build Script
+
+Sau khi build xong, bạn có thể chạy game và kiểm tra xem asset có được load đúng không.
