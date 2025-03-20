@@ -61,25 +61,42 @@ namespace VA.DesignPattern
     public static class PoolingObject
     {
         private static Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
-        public static GameObject GetObject(GameObject gameObject)
+        public static GameObject GetObject(GameObject gameObject, Vector3? position = null, Transform parent = null)
         {
+            if (gameObject == null)
+            {
+                throw new System.ArgumentNullException(nameof(gameObject), "GameObject is null!");
+            }
+            GameObject obj;
             if (objectPool.TryGetValue(gameObject.name, out Queue<GameObject> objectList))
             {
                 if (objectList.Count == 0)
                 {
-                    return CreatNewGameObject(gameObject);
+                    obj = CreatNewGameObject(gameObject);
                 }
                 else
                 {
-                    GameObject _object = objectList.Dequeue();
-                    _object.SetActive(true);
-                    return _object;
+                    obj = objectList.Dequeue();
                 }
             }
             else
             {
-                return CreatNewGameObject(gameObject);
+                obj = CreatNewGameObject(gameObject);
             }
+            if (position.HasValue)
+            {
+                obj.transform.position = position.Value;
+            }
+            if (parent != null)
+            {
+                obj.transform.SetParent(parent);
+            }
+            else
+            {
+                obj.transform.SetParent(null); 
+            }
+            obj.SetActive(true);
+            return obj;
         }
         private static GameObject CreatNewGameObject(GameObject gameObject)
         {
@@ -89,6 +106,7 @@ namespace VA.DesignPattern
         }
         public static void ReturnObject(GameObject gameObject)
         {
+            gameObject.SetActive(false);
             if (objectPool.TryGetValue(gameObject.name, out Queue<GameObject> objectList))
             {
                 objectList.Enqueue(gameObject);
@@ -99,7 +117,7 @@ namespace VA.DesignPattern
                 newGameObjectQ.Enqueue(gameObject);
                 objectPool.Add(gameObject.name, newGameObjectQ);
             }
-            gameObject.SetActive(false);
+            
         }
     }
 

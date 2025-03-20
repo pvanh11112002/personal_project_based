@@ -7,6 +7,9 @@ Tính năng:
 - Hỗ trợ Asset Bundles: Addressables tự động đóng gói tài nguyên thành các Asset Bundles mà không cần cấu hình thủ công
 - Dễ dàng cập nhật: Có thể cập nhật tài nguyên mà không cần build lại toàn bộ game
 
+Các khái niệm cơ bản trong Addressable:
+- AsyncOperationHandle: Một struct sử dụng trong Addressables dùng để quản lý thao tác bất đồng bộ(async), đóng vai trò như một tay cầm (handle) giúp kiểm soát tiến trình loading và giải phóng tài nguyên sau khi dùng.
+
 Cơ bản:
 1. Bật Addressables trong Unity
 Trước tiên, bạn cần thêm Addressables vào dự án:
@@ -89,3 +92,6 @@ Sau khi thiết lập xong, cần build dữ liệu Addressables để game có 
 * Nhấn Build → New Build → Default Build Script
 
 Sau khi build xong, bạn có thể chạy game và kiểm tra xem asset có được load đúng không.
+
+--- Chiêm nghiệm:
+* Load scene bằng addressable không cần phải add scene vào build setting
