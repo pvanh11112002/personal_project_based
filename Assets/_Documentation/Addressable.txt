@@ -95,3 +95,36 @@ Sau khi build xong, bạn có thể chạy game và kiểm tra xem asset có đ�
 
 --- Chiêm nghiệm:
 * Load scene bằng addressable không cần phải add scene vào build setting
+* Addressable có thể dùng để load những loại như sau:
+-- Scene: Chuyển đổi màn chơi, UI Scene
+-- Prefab: Nhân vật, enemy, item, vũ khí
+-- Sprite: Icon UI, avatar, background
+-- AudioClip: Nhạc nền, hiệu ứng súng, giọng nói
+-- Material: Skin nhân vật, hiệu ứng shader
+-- Shader: Hiệu ứng dissolve, outline, water
+-- ScriptableObject: Dữ liệu kỹ năng, AI, nhiệm vụ
+-- TextAsset: File JSON, CSV chứa dữ liệu game
+-- VideoClip: Cutscene, quảng cáo game
+Một ví dụ về việc load một trong các loại dữ liệu trên:
+------------------------------------------------------------------------------------------
+[SerializeField] private AssetReferenceSprite spriteReference;
+private SpriteRenderer spriteRenderer;
+
+private async void LoadSprite()
+{
+    spriteRenderer = GetComponent<SpriteRenderer>(); 
+
+    Sprite sprite = await spriteReference.LoadAssetAsync<Sprite>().Task;
+    spriteRenderer.sprite = sprite; // ✅ Gán vào SpriteRenderer
+}
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+[SerializeField] private AssetReferenceT<MyDataScriptableObject> dataReference;
+private MyDataScriptableObject loadedData;
+
+private async void LoadData()
+{
+    loadedData = await dataReference.LoadAssetAsync<MyDataScriptableObject>().Task;
+    Debug.Log($"Loaded Data: {loadedData.someValue}");
+}
+------------------------------------------------------------------------------------------

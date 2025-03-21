@@ -16,7 +16,12 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 8e3f923442b75144abb7b3bffb1f1b23
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 857b6e5680e4dc743ab14524056d32d9
+    m_Address: Assets/Demo/Addressable/Panel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: b5fb3169d7a2659438bdadc199382d4a, type: 2}
   m_SchemaSet:

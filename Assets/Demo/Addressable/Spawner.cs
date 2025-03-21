@@ -1,65 +1,73 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEditor.VersionControl;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.PlayerLoop;
-using UnityEngine.SocialPlatforms.GameCenter;
-using VA;
+using UnityEngine.SceneManagement;
 using VA.Addressable;
 using VA.DesignPattern;
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject objReference;
     [SerializeField] private AssetReference assetReference;
-    public Vector3 startPosition = new Vector3(0, 0, 0); 
-    private float nextX;
+    [SerializeField] private AssetReference uiReference;
+    [SerializeField] private AssetReference sceneReference;
+    [SerializeField] private List<AssetReferenceT<InfoSO>> infoSORef;
+    [SerializeField] private InfoSO loadedInfo;
+    [SerializeField] private Transform uiParent;
+
+
+
+
+
+    public Vector3 startPosition = new Vector3(0, 0, 0);
+    public Vector3 currentPos = new Vector3(0, 0, 0);
+    private float nextX = 0;
     public List<GameObject> list = new List<GameObject>();
     void Start()
     {
         Application.targetFrameRate = 120;
-        nextX = startPosition.x;
-        StartCoroutine(SpawnObjects());
+        SpawnUI();
+        LoadInfo();
+
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.D))
         {
-            foreach(GameObject go in list)
+            for (int i = list.Count - 1; i >= 0; i--)
             {
-                PoolingObject.ReturnObject(go);
+                PoolingObject.ReturnObject(list[i]);
             }
             list.Clear();
+            nextX = 0;
+        } 
+        else if(Input.GetKeyDown(KeyCode.S))
+        {
+            SpawnACube();         
         }    
     }
-    private IEnumerator SpawnObjects()
+    
+    private async void SpawnACube()
     {
-        while (true)
-        {
-            Task<GameObject> loadTask = LoadAndReturnObject();
-            yield return new WaitUntil(() => loadTask.IsCompleted);
-
-            GameObject pooledObj = loadTask.Result;
-            if (pooledObj != null)
-            {
-                list.Add(pooledObj);
-            }
-            nextX += 2;
-            yield return new WaitForSeconds(2f);
-        }
-    }
-    private async Task<GameObject> LoadAndReturnObject()
+        GameObject cubeFromPO = await PoolingObject.GetObjectWithAddressable(assetReference);
+        currentPos.x = nextX;
+        cubeFromPO.transform.position = currentPos;
+        nextX += 2;
+        list.Add(cubeFromPO);
+    }    
+    private async void SpawnUI()
     {
-        GameObject obj = await CustomAddressables.Spawn<GameObject>(assetReference);
-
-        if (obj != null)
+        await CustomAddressables.Spawn<GameObject>(uiReference, uiParent);
+    } 
+    private async void LoadInfo()
+    {
+        for(int i =0; i < infoSORef.Count; i++)
         {
-            PoolingObject.ReturnObject(obj);
-        }
-
-        GameObject pooledObj = PoolingObject.GetObject(obj);
-        pooledObj.transform.position =  new Vector3(nextX, startPosition.y, startPosition.z);
-        return pooledObj;
-    }
+            loadedInfo = await infoSORef[i].LoadAssetAsync<InfoSO>().Task;
+            Debug.Log($"Loaded Info Num: {i}");
+            Debug.Log($"Loaded Info Name: {loadedInfo.nameInfo}");
+            Debug.Log($"Loaded Info Gender Male: {loadedInfo.isMale}");
+            Debug.Log($"Loaded Info Gender Female: {loadedInfo.isFemale}");
+            Debug.Log($"Loaded Info Vale: {loadedInfo.val}");
+        }    
+        
+    }    
 }

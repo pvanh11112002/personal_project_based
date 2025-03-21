@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using VA.Addressable;
 using VA.DesignPattern;
 #region Description (English Below)
 //---------------------------- Mô tả - Description ----------------------------
@@ -61,8 +64,9 @@ namespace VA.DesignPattern
     public static class PoolingObject
     {
         private static Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
-        public static GameObject GetObject(GameObject gameObject, Vector3? position = null, Transform parent = null)
+        public static GameObject GetObject(GameObject gameObject)
         {
+            // Check nếu obj null
             if (gameObject == null)
             {
                 throw new System.ArgumentNullException(nameof(gameObject), "GameObject is null!");
@@ -72,28 +76,16 @@ namespace VA.DesignPattern
             {
                 if (objectList.Count == 0)
                 {
-                    obj = CreatNewGameObject(gameObject);
+                    obj = CreatNewGameObject(gameObject); 
                 }
                 else
                 {
-                    obj = objectList.Dequeue();
+                    obj = objectList.Dequeue(); // Get and delete first gameobjet of queue
                 }
             }
             else
             {
                 obj = CreatNewGameObject(gameObject);
-            }
-            if (position.HasValue)
-            {
-                obj.transform.position = position.Value;
-            }
-            if (parent != null)
-            {
-                obj.transform.SetParent(parent);
-            }
-            else
-            {
-                obj.transform.SetParent(null); 
             }
             obj.SetActive(true);
             return obj;
@@ -118,6 +110,47 @@ namespace VA.DesignPattern
                 objectPool.Add(gameObject.name, newGameObjectQ);
             }
             
+        }
+        public static async Task<GameObject> GetObjectWithAddressable(AssetReference assetRef)
+        {
+            // Check nếu obj null
+            if (assetRef == null)
+            {
+                throw new System.ArgumentNullException(nameof(assetRef), "Reference is null!");
+            }
+            GameObject obj;
+            string name = assetRef.AssetGUID; 
+            if (objectPool.TryGetValue(name, out Queue<GameObject> objectList))
+            {
+                if (objectList.Count == 0)
+                {
+                    obj = await CreatNewGameObjectWithAddressable(assetRef);
+                }
+                else
+                {
+                    obj = objectList.Dequeue(); // Get and delete first gameobjet of queue
+                }
+            }
+            else
+            {
+                obj = await CreatNewGameObjectWithAddressable(assetRef);
+            }
+            if (obj == null)
+                return null;
+            obj.SetActive(true);
+            return obj;
+        }
+
+        private static async Task<GameObject> CreatNewGameObjectWithAddressable(AssetReference assetRef)
+        {
+            GameObject gO = await CustomAddressables.Spawn<GameObject>(assetRef);
+            gO.name = assetRef.AssetGUID;
+            if (gO == null)
+            {
+                Debug.LogError($"Failed to load Addressable: {assetRef.AssetGUID}");
+                return null;
+            }
+            return gO;
         }
     }
 

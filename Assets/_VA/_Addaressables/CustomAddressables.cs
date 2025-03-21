@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿//using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.SceneManagement;
 #region Description (English Below)
 //---------------------------- Mô tả - Description ----------------------------
 //---------------------------- Tiếng Việt----------------------------
@@ -19,6 +22,7 @@ namespace VA.Addressable
     {
         private static List<AsyncOperationHandle> loadedHandles = new List<AsyncOperationHandle>();
         private static List<Object> spawnedInstances = new List<Object>();
+        private static Dictionary<string, AsyncOperationHandle<SceneInstance>> loadedScenes = new Dictionary<string, AsyncOperationHandle<SceneInstance>>();
         /// <summary>
         /// Spawn a object with addressables by object address
         /// </summary>
@@ -48,7 +52,7 @@ namespace VA.Addressable
         /// </summary>
         /// <param name="assetReference">Direct refernce, just drag and drop</param>
         /// <returns>Return a game object</returns>
-        public static async Task<T> Spawn<T>(AssetReference assetReference) where T : Object
+        public static async Task<T> Spawn<T>(AssetReference assetReference, Transform parent = null) where T : Object
         {
             if (!assetReference.RuntimeKeyIsValid())
             {
@@ -59,8 +63,8 @@ namespace VA.Addressable
             await objectHandle.Task;
             if (objectHandle.Status == AsyncOperationStatus.Succeeded)
             {
-                T newGameObject = objectHandle.Result;
-                Instantiate(newGameObject);
+                T newGameObject = Instantiate(objectHandle.Result, parent);
+                //Instantiate(newGameObject);
                 spawnedInstances.Add(newGameObject);    // Lưu lại instance
                 loadedHandles.Add(objectHandle);
                 return newGameObject;
@@ -108,7 +112,8 @@ namespace VA.Addressable
             {
                 if (instance != null)
                 {
-                    Object.Destroy(instance);
+                    //DestroyImmediate(instance, true);
+                    Destroy(instance);
                 }
             }
             spawnedInstances.Clear();
@@ -120,6 +125,15 @@ namespace VA.Addressable
             Resources.UnloadUnusedAssets();
             System.GC.Collect();
         }
+        public static void LoadScene(AssetReference sceneRef, LoadSceneMode loadMode)
+        {
+            if (!sceneRef.RuntimeKeyIsValid())
+            {
+                return;
+            }
+            Addressables.LoadSceneAsync(sceneRef, loadMode);
+        }
+        
     }
 }
 
