@@ -22,6 +22,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b862c67e7b25c145919cfd3f154e279
+    m_Address: Assets/Demo/Addressable/Ghi.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa26928ac8503bf49a367faf9941d6ed
+    m_Address: Assets/Demo/Addressable/Trung.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: b5fb3169d7a2659438bdadc199382d4a, type: 2}
   m_SchemaSet:

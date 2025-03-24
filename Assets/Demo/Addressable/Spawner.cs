@@ -67,7 +67,6 @@ public class Spawner : MonoBehaviour
             Debug.Log($"Loaded Info Gender Male: {loadedInfo.isMale}");
             Debug.Log($"Loaded Info Gender Female: {loadedInfo.isFemale}");
             Debug.Log($"Loaded Info Vale: {loadedInfo.val}");
-        }    
-        
+        }         
     }    
 }

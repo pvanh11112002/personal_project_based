@@ -275,7 +275,19 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  infoSORef: []
+  infoSORef:
+  - m_AssetGUID: db77f3541e1dd574d802b6f638c70da1
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 3b862c67e7b25c145919cfd3f154e279
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: aa26928ac8503bf49a367faf9941d6ed
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   loadedInfo: {fileID: 0}
   uiParent: {fileID: 1213305503}
   startPosition: {x: 0, y: 0, z: 0}

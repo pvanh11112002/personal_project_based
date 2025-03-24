@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c969aab014fcc39449bc9bc8b8689a06, type: 3}
+  m_Name: SaveGame SO
+  m_EditorClassIdentifier: 
+  playerDataRuntime:
+    curCheckPointIdx: 0
+    startTime: 0
+    elapsedTimeFromLastEnterGame: 0
+    firstTimeEnterGame: 1
+    canDoubleJump: 0
+    haveShield: 0
+    doneCut3: 0
+    doneCut4: 0
+    doneCut5: 0
+    CompletedRoom: 
+    currentCharacterSkinId: 0
+    currentCharacterSkinIdInProgress: 1
+    currentCharacterSkinIdInProgressPercentage: 0
+    unlockedSkinId: 00000000
+    unlockedSkinButNotWatchAdsYet: 
+    passedCheckpointToUnlockedSkin: 
+    totalTimesEffectDoubleJump: 30
+  gameDataRuntime:
+    totalCheckPointCount: 31
+    soundStatus: 1
+    musicStatus: 1
+    vibrationStatus: 1
+    intensityStat: 1

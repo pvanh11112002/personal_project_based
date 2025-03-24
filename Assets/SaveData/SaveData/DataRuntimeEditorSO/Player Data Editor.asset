@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94b475adb67fbee4bb513b689c4bb9ce, type: 3}
+  m_Name: Player Data Editor
+  m_EditorClassIdentifier: 
+  playerDataRuntime:
+    curCheckPointIdx: 26
+    startTime: 0
+    elapsedTimeFromLastEnterGame: 26
+    firstTimeEnterGame: 0
+    canDoubleJump: 0
+    haveShield: 0
+    doneCut3: 0
+    doneCut4: 0
+    doneCut5: 0
+    CompletedRoom: 
+    currentCharacterSkinId: 5
+    currentCharacterSkinIdInProgress: 2
+    currentCharacterSkinIdInProgressPercentage: 20
+    unlockedSkinId: 0000000001000000030000000400000005000000
+    unlockedSkinButNotWatchAdsYet: 
+    passedCheckpointToUnlockedSkin: 1c0000001d0000001e0000001f000000
+    totalTimesEffectDoubleJump: 30
+    tutID: 2
+    isOnTutorial: 0
