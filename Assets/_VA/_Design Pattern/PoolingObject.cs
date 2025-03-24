@@ -61,18 +61,17 @@ using VA.DesignPattern;
 #endregion
 namespace VA.DesignPattern
 {
-    public static class PoolingObject
+    public static class PoolingObject<T> where T : Component
     {
-        private static Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
-        public static GameObject GetObject(GameObject gameObject)
+        private static Dictionary<string, Queue<T>> objectPool = new Dictionary<string, Queue<T>>();
+        public static T GetObject(T gameObject)
         {
-            // Check nếu obj null
             if (gameObject == null)
             {
                 throw new System.ArgumentNullException(nameof(gameObject), "GameObject is null!");
             }
-            GameObject obj;
-            if (objectPool.TryGetValue(gameObject.name, out Queue<GameObject> objectList))
+            T obj;
+            if (objectPool.TryGetValue(gameObject.name, out Queue<T> objectList))
             {
                 if (objectList.Count == 0)
                 {
@@ -87,71 +86,71 @@ namespace VA.DesignPattern
             {
                 obj = CreatNewGameObject(gameObject);
             }
-            obj.SetActive(true);
+            obj.gameObject.SetActive(true);
             return obj;
         }
-        private static GameObject CreatNewGameObject(GameObject gameObject)
+        private static T CreatNewGameObject(T gameObject)
         {
-            GameObject newGameObject = Object.Instantiate(gameObject);
+            T newGameObject = Object.Instantiate(gameObject);
             newGameObject.name = gameObject.name;
             return newGameObject;
         }
-        public static void ReturnObject(GameObject gameObject)
+        public static void ReturnObject(T gameObject)
         {
-            gameObject.SetActive(false);
-            if (objectPool.TryGetValue(gameObject.name, out Queue<GameObject> objectList))
+            gameObject.gameObject.SetActive(false);
+            if (objectPool.TryGetValue(gameObject.name, out Queue<T> objectList))
             {
                 objectList.Enqueue(gameObject);
             }
             else
             {
-                Queue<GameObject> newGameObjectQ = new Queue<GameObject>();
+                Queue<T> newGameObjectQ = new Queue<T>();
                 newGameObjectQ.Enqueue(gameObject);
                 objectPool.Add(gameObject.name, newGameObjectQ);
             }
             
         }
-        public static async Task<GameObject> GetObjectWithAddressable(AssetReference assetRef)
-        {
-            // Check nếu obj null
-            if (assetRef == null)
-            {
-                throw new System.ArgumentNullException(nameof(assetRef), "Reference is null!");
-            }
-            GameObject obj;
-            string name = assetRef.AssetGUID; 
-            if (objectPool.TryGetValue(name, out Queue<GameObject> objectList))
-            {
-                if (objectList.Count == 0)
-                {
-                    obj = await CreatNewGameObjectWithAddressable(assetRef);
-                }
-                else
-                {
-                    obj = objectList.Dequeue(); // Get and delete first gameobjet of queue
-                }
-            }
-            else
-            {
-                obj = await CreatNewGameObjectWithAddressable(assetRef);
-            }
-            if (obj == null)
-                return null;
-            obj.SetActive(true);
-            return obj;
-        }
+        //public static async Task<GameObject> GetObjectWithAddressable(AssetReference assetRef)
+        //{
+        //    // Check nếu obj null
+        //    if (assetRef == null)
+        //    {
+        //        throw new System.ArgumentNullException(nameof(assetRef), "Reference is null!");
+        //    }
+        //    GameObject obj;
+        //    string name = assetRef.AssetGUID; 
+        //    if (objectPool.TryGetValue(name, out Queue<GameObject> objectList))
+        //    {
+        //        if (objectList.Count == 0)
+        //        {
+        //            obj = await CreatNewGameObjectWithAddressable(assetRef);
+        //        }
+        //        else
+        //        {
+        //            obj = objectList.Dequeue(); // Get and delete first gameobjet of queue
+        //        }
+        //    }
+        //    else
+        //    {
+        //        obj = await CreatNewGameObjectWithAddressable(assetRef);
+        //    }
+        //    if (obj == null)
+        //        return null;
+        //    obj.SetActive(true);
+        //    return obj;
+        //}
 
-        private static async Task<GameObject> CreatNewGameObjectWithAddressable(AssetReference assetRef)
-        {
-            GameObject gO = await CustomAddressables.Spawn<GameObject>(assetRef);
-            gO.name = assetRef.AssetGUID;
-            if (gO == null)
-            {
-                Debug.LogError($"Failed to load Addressable: {assetRef.AssetGUID}");
-                return null;
-            }
-            return gO;
-        }
+        //private static async Task<GameObject> CreatNewGameObjectWithAddressable(AssetReference assetRef)
+        //{
+        //    GameObject gO = await CustomAddressables.Spawn<GameObject>(assetRef);
+        //    gO.name = assetRef.AssetGUID;
+        //    if (gO == null)
+        //    {
+        //        Debug.LogError($"Failed to load Addressable: {assetRef.AssetGUID}");
+        //        return null;
+        //    }
+        //    return gO;
+        //}
     }
 
 }
